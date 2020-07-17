@@ -7,6 +7,7 @@ from tensorflow.keras import layers
 from utils import *
 import argparse
 from math import sin,cos,sqrt
+import os
 
 LATENT_DIM = 2
 DATA_DIM=784
@@ -181,6 +182,12 @@ class MNISTAAE:
             'batch_size': batch_size,
             'model_name': MODEL_NAME
         }
+        #CREATE FOLDERS
+        if not os.path.exists('plot'):
+            os.makedirs('plot')
+
+        if not os.path.exists(MODEL_NAME):
+            os.makedirs(MODEL_NAME)
 
         train_loss=[[],[],[]]
         val_loss=[[],[],[]]
