@@ -19,7 +19,7 @@ def gaussian(batch_size, n_dim, mean=0, var=1):
     return z
 
 class AAE():
-    def __init__(self,op):
+    def __init__(self):
         self.encoder,self.decoder,self.disc=self.make_model()
 
         self.base_lr=0.001
