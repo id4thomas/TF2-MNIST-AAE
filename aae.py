@@ -20,7 +20,7 @@ def gaussian(batch_size, n_dim, mean=0, var=1):
 
 class AAE():
     def __init__(self,op):
-        self.encoder,self.decoder,self.disc,self.classifier=self.make_model()
+        self.encoder,self.decoder,self.disc=self.make_model()
 
         self.base_lr=0.001
 
@@ -118,7 +118,7 @@ class MNISTAAE:
         with tf.GradientTape() as t:
             z=self.net.encoder(batch)
             #gaussian(batch_size, n_labels, n_dim, mean=0, var=1, use_label_info=False):
-            real_g=gaussian(batch.shape[0],LATENT)
+            real_g=gaussian(batch.shape[0],LATENT_DIM)
 
             d_real,d_fake=self.net.disc_latent(real_g,z)
 
@@ -152,7 +152,7 @@ class MNISTAAE:
         recon_loss = tf.reduce_mean(tf.keras.losses.binary_crossentropy(x, out))*DATA_DIM
 
         #Discriminator Loss
-        real_g=gaussian(batch.shape[0],LATENT)
+        real_g=gaussian(batch.shape[0],LATENT_DIM)
         d_real,d_fake=self.net.disc_latent(real_g,z)
         dc_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(d_real), logits=d_real))
         dc_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(d_fake), logits=d_fake))
@@ -164,7 +164,7 @@ class MNISTAAE:
         return [recon_loss,disc_loss,g_loss]
 
     def generateImages(self,n=100):
-        latents = gaussian(n, LATENT)
+        latents = gaussian(n, LATENT_DIM)
         # latents = 5*np.random.normal(size=(n, LATENT))
         imgs = self.net.decoder.predict(latents)
         return imgs
@@ -203,13 +203,13 @@ class MNISTAAE:
                     batch_loss[l]+=losses[l]
 
                 if i%batch_print==0:
-                    print('Batch loss {} recon:{:.5f}, disc:{:.5f} g_loss:{:.5f} c_loss{:.5f}'.format(i,losses[0],losses[1],losses[2],losses[3]))
+                    print('Batch loss {} recon:{:.5f}, disc:{:.5f} g_loss:{:.5f}'.format(i,losses[0],losses[1],losses[2]))
 
             ep_loss=[l/batch_iters for l in batch_loss]
             #Record Train loss
             for l in range(3):
                 train_loss[l].append(ep_loss[l])
-            print('Epoch loss recon:{:.5f}, disc:{:.5f} g_loss:{:.5f} c_loss{:.5f}'.format(ep_loss[0],ep_loss[1],ep_loss[2],ep_loss[3]))
+            print('Epoch loss recon:{:.5f}, disc:{:.5f} g_loss:{:.5f}'.format(ep_loss[0],ep_loss[1],ep_loss[2]))
 
             #Record Val Loss
             losses=self.calc_loss(x_val)
