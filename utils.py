@@ -1,5 +1,6 @@
 import numpy as np
 from keras.datasets import mnist
+import matplotlib.pyplot as plt
 
 #MNIST DATA
 def load_mnist():
