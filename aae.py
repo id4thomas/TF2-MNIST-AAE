@@ -152,7 +152,7 @@ class MNISTAAE:
         recon_loss = tf.reduce_mean(tf.keras.losses.binary_crossentropy(x, out))*DATA_DIM
 
         #Discriminator Loss
-        real_g=gaussian(batch.shape[0],LATENT_DIM)
+        real_g=gaussian(x.shape[0],LATENT_DIM)
         d_real,d_fake=self.net.disc_latent(real_g,z)
         dc_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(d_real), logits=d_real))
         dc_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(d_fake), logits=d_fake))
